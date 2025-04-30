@@ -24,10 +24,10 @@ public class UserService {
     }
 
     public ResponseEntity<String> login(LoginRequest loginRequest) {
-        Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
-        if (user.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
-            return ResponseEntity.ok("Giriş başarılı.");
-        }
-        return ResponseEntity.status(401).body("Geçersiz kullanıcı adı veya şifre.");
-    }
+      Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
+      if (user.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
+          return ResponseEntity.ok("Giriş başarılı.");
+       }
+       return ResponseEntity.status(401).body("Geçersiz kullanıcı adı veya şifre.");
+   }
 }
