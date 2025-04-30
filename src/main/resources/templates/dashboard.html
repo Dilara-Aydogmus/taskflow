@@ -2,77 +2,200 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Görev Takibi</title>
+  <title>Dashboard - Görev Takibi</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #fff0f5;
       text-align: center;
       padding: 40px;
-      background-color: #fff0f5;
     }
-
     h1 {
       color: #d63384;
     }
-
+    .button {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
     table {
-      margin: 0 auto;
+      margin: 20px auto;
       border-collapse: collapse;
-      width: 80%;
+      width: 90%;
     }
-
     table, th, td {
-      border: 2px solid #ff69b4; /* pembe kenarlık */
+      border: 2px solid #ff69b4;
     }
-
     th, td {
-      padding: 12px;
+      padding: 10px;
       text-align: center;
     }
-
     th {
       background-color: #ffe0eb;
-      color: #a1005d;
     }
-
     tr:nth-child(even) {
       background-color: #fff5f9;
+    }
+    .modal, .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      min-width: 300px;
+      max-width: 400px;
+    }
+    .modal-content input {
+      width: 90%;
+      margin: 5px 0;
+      padding: 8px;
     }
   </style>
 </head>
 <body>
-<h1>Görev Durumu Takibi</h1>
+<h1>Görev Takibi</h1>
+
+<button class="button" onclick="showModal('createModal')">+ Görev Oluştur</button>
+<button class="button" onclick="showModal('assignModal')">👤 Görev Ata</button>
 
 <table id="taskTable">
   <thead>
   <tr>
+    <th>ID</th>
     <th>Başlık</th>
     <th>Açıklama</th>
     <th>Durum</th>
     <th>Atanan</th>
+    <th>İşlem</th>
   </tr>
   </thead>
-  <tbody>
-  <!-- Satırlar JS ile doldurulacak -->
-  </tbody>
+  <tbody></tbody>
 </table>
 
+<div class="overlay" id="overlay" onclick="hideModals()"></div>
+
+<!-- Görev Oluştur Modal -->
+<div class="modal" id="createModal">
+  <div class="modal-content">
+    <h3>Yeni Görev</h3>
+    <input id="title" placeholder="Başlık">
+    <input id="description" placeholder="Açıklama">
+    <input id="status" placeholder="Durum">
+    <button class="button" onclick="createTask()">Kaydet</button>
+  </div>
+</div>
+
+<!-- Görev Ata Modal -->
+<div class="modal" id="assignModal">
+  <div class="modal-content">
+    <h3>Görev Ata</h3>
+    <input id="assignId" placeholder="Görev ID">
+    <input id="assignedTo" placeholder="Atanacak Kullanıcı">
+    <input id="assignStatus" placeholder="Yeni Durum">
+    <button class="button" onclick="assignTask()">Ata</button>
+  </div>
+</div>
+
 <script>
+  const overlay = document.getElementById('overlay');
+  const createModal = document.getElementById('createModal');
+  const assignModal = document.getElementById('assignModal');
+
+  function showModal(id) {
+    document.getElementById(id).style.display = 'flex';
+    overlay.style.display = 'block';
+  }
+  function hideModals() {
+    createModal.style.display = 'none';
+    assignModal.style.display = 'none';
+    overlay.style.display = 'none';
+  }
+
+  function createTask() {
+    fetch('/api/tasks/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        status: document.getElementById('status').value
+      })
+    }).then(() => location.reload());
+  }
+
+  function assignTask() {
+    const id = document.getElementById('assignId').value;
+    fetch(`/api/tasks/get/${id}`)
+            .then(res => res.json())
+            .then(task => {
+              task.assignedTo = document.getElementById('assignedTo').value;
+              task.status = document.getElementById('assignStatus').value;
+              return fetch(`/api/tasks/update/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(task)
+              });
+            })
+            .then(() => location.reload());
+  }
+
+  function deleteTask(id) {
+    if (confirm("Bu görevi silmek istediğine emin misin?")) {
+      fetch(`/api/tasks/delete/${id}`, {
+        method: 'DELETE'
+      }).then(() => location.reload());
+    }
+  }
+
   fetch('/api/tasks/findAll')
-          .then(response => response.json())
+          .then(res => res.json())
           .then(tasks => {
             const tbody = document.querySelector('#taskTable tbody');
             tasks.forEach(task => {
               const row = document.createElement('tr');
               row.innerHTML = `
-                        <td>${task.title}</td>
-                        <td>${task.description}</td>
-                        <td>${task.status}</td>
-                        <td>${task.assignedTo}</td>
-                    `;
+                    <td>${task.id}</td>
+                    <td>${task.title}</td>
+                    <td>${task.description}</td>
+                    <td>${task.status}</td>
+                    <td>${task.assignedTo || ''}</td>
+                    <td>
+                        <button onclick="showStatusEdit(${task.id})">Durumu Değiştir</button>
+                        <button onclick="deleteTask(${task.id})">Sil</button>
+                    </td>
+                `;
               tbody.appendChild(row);
             });
           });
+
+  function showStatusEdit(id) {
+    const newStatus = prompt("Yeni durumu girin:");
+    if (newStatus) {
+      fetch(`/api/tasks/get/${id}`)
+              .then(res => res.json())
+              .then(task => {
+                task.status = newStatus;
+                return fetch(`/api/tasks/update/${id}`, {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(task)
+                });
+              })
+              .then(() => location.reload());
+    }
+  }
 </script>
 </body>
 </html>
