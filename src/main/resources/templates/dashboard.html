@@ -94,6 +94,7 @@
     <input id="description" placeholder="Açıklama">
     <input id="status" placeholder="Durum">
     <button class="button" onclick="createTask()">Kaydet</button>
+    <button class="button" onclick="hideModals()">İptal</button>
   </div>
 </div>
 
@@ -105,6 +106,7 @@
     <input id="assignedTo" placeholder="Atanacak Kullanıcı">
     <input id="assignStatus" placeholder="Yeni Durum">
     <button class="button" onclick="assignTask()">Ata</button>
+    <button class="button" onclick="hideModals()">İptal</button>
   </div>
 </div>
 
@@ -162,6 +164,7 @@
   fetch('/api/tasks/findAll')
           .then(res => res.json())
           .then(tasks => {
+            tasks.sort((a, b) => a.id - b.id); // ID'ye göre küçükten büyüğe sırala
             const tbody = document.querySelector('#taskTable tbody');
             tasks.forEach(task => {
               const row = document.createElement('tr');
