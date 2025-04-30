@@ -27,7 +27,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**", "/api/tasks/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(withDefaults()) // default login.html
+                .formLogin(form -> form
+                        .defaultSuccessUrl("/dashboard", true)
+                        .permitAll()
+                )
                 .userDetailsService(userDetailsService)
                 .build();
     }
