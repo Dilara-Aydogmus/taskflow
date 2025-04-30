@@ -1,10 +1,78 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Görev Takibi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #fff0f5;
+    }
+
+    h1 {
+      color: #d63384;
+    }
+
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 80%;
+    }
+
+    table, th, td {
+      border: 2px solid #ff69b4; /* pembe kenarlık */
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #ffe0eb;
+      color: #a1005d;
+    }
+
+    tr:nth-child(even) {
+      background-color: #fff5f9;
+    }
+  </style>
 </head>
 <body>
-<h1>Welcome to Dashboard</h1>
-<p>Basariyla giris yaptiniz.</p>
+<h1>Görev Durumu Takibi</h1>
+
+<table id="taskTable">
+  <thead>
+  <tr>
+    <th>Başlık</th>
+    <th>Açıklama</th>
+    <th>Durum</th>
+    <th>Atanan</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Satırlar JS ile doldurulacak -->
+  </tbody>
+</table>
+
+<script>
+  fetch('/api/tasks/findAll')
+          .then(response => response.json())
+          .then(tasks => {
+            const tbody = document.querySelector('#taskTable tbody');
+            tasks.forEach(task => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                        <td>${task.title}</td>
+                        <td>${task.description}</td>
+                        <td>${task.status}</td>
+                        <td>${task.assignedTo}</td>
+                    `;
+              tbody.appendChild(row);
+            });
+          });
+</script>
 </body>
 </html>
