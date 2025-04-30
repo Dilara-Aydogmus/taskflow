@@ -46,7 +46,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(id).orElseThrow();
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());
-        task.setStatus(dto.getStatus());
+        task.setStatus(dto.getStatus()); //guncellenebilir gorev durumu takibi
         task.setAssignedTo(dto.getAssignedTo());
 
         Task updated = taskRepository.save(task);
@@ -58,7 +58,7 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteById(id);
     }
 
-    // DTO ↔ Entity dönüşümü için yardımcı metodlar (mapper yok)
+    // DTO - Entity
     private TaskDTO convertToDTO(Task task) {
         TaskDTO dto = new TaskDTO();
         dto.setId(task.getId());
