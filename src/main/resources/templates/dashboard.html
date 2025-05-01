@@ -132,26 +132,43 @@
       body: JSON.stringify({
         title: document.getElementById('title').value,
         description: document.getElementById('description').value,
-        status: document.getElementById('status').value
+        status: document.getElementById('status').value,
+        assignedTo: "" // boş olarak gönderiyoruz
       })
     }).then(() => location.reload());
   }
 
   function assignTask() {
     const id = document.getElementById('assignId').value;
-    fetch(`/api/tasks/get/${id}`)
-            .then(res => res.json())
-            .then(task => {
-              task.assignedTo = document.getElementById('assignedTo').value;
-              task.status = document.getElementById('assignStatus').value;
-              return fetch(`/api/tasks/update/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(task)
-              });
+    const username = document.getElementById('assignedTo').value;
+    const status = document.getElementById('assignStatus').value;
+
+    fetch(`/api/users/by-username/${username}`)
+            .then(res => {
+              if (!res.ok) {
+                throw new Error("Kullanıcı bulunamadı");
+              }
+              return res.json();
             })
-            .then(() => location.reload());
+            .then(user => {
+              return fetch(`/api/tasks/get/${id}`)
+                      .then(res => res.json())
+                      .then(task => {
+                        task.assignedTo = username;          // gösterim için
+                        task.assignedToId = user.id;         // id olarak gönderiyoruz
+                        task.status = status;
+
+                        return fetch(`/api/tasks/update/${id}`, {
+                          method: 'PUT',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(task)
+                        });
+                      });
+            })
+            .then(() => location.reload())
+            .catch(err => alert(err.message));
   }
+
 
   function deleteTask(id) {
     if (confirm("Bu görevi silmek istediğine emin misin?")) {
@@ -173,7 +190,7 @@
                     <td>${task.title}</td>
                     <td>${task.description}</td>
                     <td>${task.status}</td>
-                    <td>${task.assignedTo || ''}</td>
+                    <td>${task.assignedTo ? task.assignedTo : '—'}</td>
                     <td>
                         <button onclick="showStatusEdit(${task.id})">Durumu Değiştir</button>
                         <button onclick="deleteTask(${task.id})">Sil</button>

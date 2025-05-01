@@ -2,10 +2,12 @@ package com.taskflow.service;
 
 import com.taskflow.dto.TaskDTO;
 import com.taskflow.entity.Task;
+import com.taskflow.entity.User;
+
 import com.taskflow.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import com.taskflow.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,8 +19,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
-
+    private String assignedTo;
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
     /**
      * Yeni bir görev oluşturur.
@@ -32,12 +35,17 @@ public class TaskServiceImpl implements TaskService {
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());
         task.setStatus(dto.getStatus());
-        task.setAssignedTo(dto.getAssignedTo());
+
+        // 👇 Buraya ekle: Kullanıcı adından User nesnesi bulup set et
+        if (dto.getAssignedTo() != null && !dto.getAssignedTo().isEmpty()) {
+            User user = userRepository.findByUsername(dto.getAssignedTo())
+                    .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + dto.getAssignedTo()));
+            task.setAssignedTo(user);
+        }
 
         Task saved = taskRepository.save(task);
         return convertToDTO(saved);
     }
-
     /**
      * Tüm görevleri getirir.
      *
@@ -74,13 +82,18 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(id).orElseThrow();
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());
-        task.setStatus(dto.getStatus()); //guncellenebilir gorev durumu takibi
-        task.setAssignedTo(dto.getAssignedTo());
+        task.setStatus(dto.getStatus());
+
+
+        if (dto.getAssignedTo() != null && !dto.getAssignedTo().isEmpty()) {
+            User user = userRepository.findByUsername(dto.getAssignedTo())
+                    .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + dto.getAssignedTo()));
+            task.setAssignedTo(user);
+        }
 
         Task updated = taskRepository.save(task);
         return convertToDTO(updated);
     }
-
     /**
      * Belirli bir ID'ye sahip görevi siler.
      *
@@ -104,7 +117,12 @@ public class TaskServiceImpl implements TaskService {
         dto.setTitle(task.getTitle());
         dto.setDescription(task.getDescription());
         dto.setStatus(task.getStatus());
-        dto.setAssignedTo(task.getAssignedTo());
+
+        if (task.getAssignedTo() != null) {
+            dto.setAssignedToId(task.getAssignedTo().getId());
+            dto.setAssignedTo(task.getAssignedTo().getUsername()); //
+        }
+
         return dto;
     }
 }

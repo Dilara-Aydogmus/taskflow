@@ -14,4 +14,5 @@ public class TaskDTO {
     private String description;
     private String status;
     private String assignedTo;
+     private Long assignedToId;
 }

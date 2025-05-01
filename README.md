@@ -10,7 +10,7 @@ bir Spring Boot tabanlı web uygulamasıdır.
 
 Login ekranından uygulamaya giriş yapmak için Spring Security üzerinden tanımlanmış varsayılan kullanıcı bilgileri:
 
-- **Kullanıcı adı:** `user`
+- **Kullanıcı adı:** `user`,  `user2`,  `user3`,  `user4`
 - **Şifre:** `12345`
 
 Bu bilgiler `application.properties` dosyasında aşağıdaki gibi tanımlanmıştır:
@@ -44,6 +44,8 @@ spring.datasource.password=12345
 TaskServiceImplTest.java
 - createTask_shouldReturnSavedTaskDTO
 - getAllTasks_shouldReturnTaskDTOList
+- createTask_withAssignedTo_shouldSetUser
+- updateTask_withAssignedTo_shouldUpdateUser
 ```
 
 Mock repository ile bağımsız test yapıldı. Gerçek veritabanı etkilenmez.
@@ -72,6 +74,7 @@ Mock repository ile bağımsız test yapıldı. Gerçek veritabanı etkilenmez.
 - Görev durumu manuel olarak değiştirilebilir (prompt ile)
 - Görev silme
 - Tüm işlemler tek sayfada görsel olarak gerçekleştirilir (dashboard.html)
+- Görev–kullanıcı ilişkisi (her görev bir kullanıcıya atanabilir)
 
 ---
 
@@ -123,6 +126,12 @@ taskflow/
 ├── pom.xml
 └── README.md
 ```
+## 🗃️ Veritabanı Yapısı (ERD)
+
+Görevler (`tasks`) tablosu, kullanıcılar (`users`) tablosuyla bire çok (many-to-one) ilişkilidir.  
+Her görev sadece bir kullanıcıya atanabilir (`assigned_to`), ancak bir kullanıcı birden fazla göreve atanabilir.
+
+![ERD](screenshots/ERD.png)
 
 ## 🖼️ Uygulama Görünümü
 

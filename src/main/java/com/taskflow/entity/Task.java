@@ -2,7 +2,7 @@ package com.taskflow.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+import com.taskflow.entity.User;
 /**
  * Veritabanında görevleri temsil eden JPA entity sınıfıdır.
  * <p>tasks tablosuna karşılık gelir. Her görev başlık, açıklama, durum ve atanmış kullanıcı bilgisi içerir.</p>
@@ -38,8 +38,9 @@ public class Task {
     private String status;
 
     /**
-     * Görevi üstlenen kullanıcının adı
+     * Görevi üstlenen kullanıcı (User nesnesi üzerinden ilişki kurulmuştur)
      */
-    @Column
-    private String assignedTo;
+    @ManyToOne
+    @JoinColumn(name = "assigned_to", referencedColumnName = "id")
+    private User assignedTo;
 }

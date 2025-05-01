@@ -5,7 +5,7 @@ import lombok.*;
 
 /**
  * Sisteme giriş yapan kullanıcıları temsil eden JPA entity sınıfıdır.
- * <p>users tablosuna karşılık gelir. Her kullanıcı bir kullanıcı adı ve şifreye sahiptir.</p>
+ * <p>Veritabanındaki "users" tablosuna karşılık gelir. Her kullanıcı benzersiz bir kullanıcı adına ve şifreye sahiptir.</p>
  */
 @Entity
 @Table(name = "users")
