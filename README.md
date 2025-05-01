@@ -141,10 +141,7 @@ Her görev sadece bir kullanıcıya atanabilir (`assigned_to`), ancak bir kullan
 ![Dashboard](screenshots/gorevata.png)
 ![Dashboard](screenshots/yenidurum.png)
 ![Dashboard](screenshots/yenigorev.png)
-
-
-
-
+![Dashboard](screenshots/logout.png)
 
 
 ## 👤 Örnek Kullanım Senaryosu
