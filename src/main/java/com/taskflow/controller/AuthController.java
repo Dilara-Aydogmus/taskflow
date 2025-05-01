@@ -1,5 +1,6 @@
 package com.taskflow.controller;
-
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import com.taskflow.dto.LoginRequest;
 import com.taskflow.entity.User;
 import com.taskflow.service.UserService;
@@ -39,4 +40,21 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest);
     }
+
+    /**
+     * Kullanıcının oturumunu sonlandırmak için kullanılır.
+     *
+     * Bu endpoint, HTTP oturumunu sonlandırır ve kullanıcıyı sistemden çıkış yaptırır.
+     * Spring Security'nin {@code request.logout()} metodu kullanılarak oturum sonlandırılır.
+     *
+     * @param request HTTP isteği (logout işlemi için kullanılır)
+     * @return Başarılı çıkış mesajı içeren HTTP 200 yanıtı
+     * @throws ServletException Eğer logout sırasında bir hata oluşursa
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) throws ServletException {
+        request.logout();
+        return ResponseEntity.ok("Çıkış yapıldı.");
+    }
+
 }

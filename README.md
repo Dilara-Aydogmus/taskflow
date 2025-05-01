@@ -68,12 +68,13 @@ Mock repository ile bağımsız test yapıldı. Gerçek veritabanı etkilenmez.
 
 ## ✅ Proje Özellikleri
 
-- Kullanıcı girişi (hazır login sayfası ile)
+- Kullanıcı girişi ve çıkışı (hazır login ve logout fonksiyonu ile)
+- Dashboard ekranında pembe temalı “Çıkış Yap” butonu ile oturum kapatılır
 - Görev oluşturma (title, description, status)
 - Görev atama (ID ile kullanıcı atama + yeni durum)
 - Görev durumu manuel olarak değiştirilebilir (prompt ile)
 - Görev silme
-- Tüm işlemler tek sayfada görsel olarak gerçekleştirilir (dashboard.html)
+- Tüm işlemler tek sayfada görsel olarak gerçekleştirilir (`dashboard.html`)
 - Görev–kullanıcı ilişkisi (her görev bir kullanıcıya atanabilir)
 
 ---
