@@ -133,6 +133,10 @@ Görevler (`tasks`) tablosu, kullanıcılar (`users`) tablosuyla bire çok (many
 Her görev sadece bir kullanıcıya atanabilir (`assigned_to`), ancak bir kullanıcı birden fazla göreve atanabilir.
 
 ![ERD](screenshots/ERD.png)
+## 📘 UML Diyagramı
+
+Aşağıdaki diyagram, projenin temel mimarisini göstermektedir:
+![UML Diagramı](screenshots/uml.png)
 
 ## 🖼️ Uygulama Görünümü
 
