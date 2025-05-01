@@ -1,19 +1,26 @@
 # TaskFlow - Basit Görev Takip Uygulaması
 
-## 🛡️ Giriş Bilgisi
-
-Login ekranından uygulamaya giriş yapmak için varsayılan kullanıcı bilgileri:
-- **Kullanıcı adı:** `user`
-- **Şifre:** `12345`
-
----
-
 ## ✨ Genel Bakış
 
 TaskFlow, kullanıcı girişi sonrası aktif olarak görev oluşturma, atama, durumu güncelleme, silme ve durum takibi işlemlerini destekleyen,
 bir Spring Boot tabanlı web uygulamasıdır.
 
 ---
+## 🛡️ Giriş Bilgisi (Spring Security)
+
+Login ekranından uygulamaya giriş yapmak için Spring Security üzerinden tanımlanmış varsayılan kullanıcı bilgileri:
+
+- **Kullanıcı adı:** `user`
+- **Şifre:** `12345`
+
+Bu bilgiler `application.properties` dosyasında aşağıdaki gibi tanımlanmıştır:
+
+```properties
+spring.security.user.name=user
+spring.security.user.password=12345
+```
+
+
 
 ## 🚀 Çalıştırmak İçin
 
